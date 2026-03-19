@@ -389,31 +389,23 @@
 </div>
 
           
-       <!-- MILJÖDIMENSIONEN - FÖRENKLAD TESTVERSION -->
-<div class="dimension-card environmental" id="dim-environmental">
-    <div class="dimension-header">🌿 Miljödimensionen</div>
-    
-    <div class="description-box-miljo">
-        <strong>Om miljödimensionen:</strong> Denna dimension handlar om åtgärdernas påverkan på den naturliga miljön.
-    </div>
-    
-    <!-- EXTREMT ENKEL TABELL - bara för test -->
-    <div style="background-color: #e8f5e9; padding: 15px; border-radius: 8px; margin: 15px 0;">
-        <p><strong>📊 Prestanda:</strong> Makadamdike (referens), Gräsbeklätt (+3), Regnträdgård (+7)</p>
-    </div>
-    
-    <div class="instruction">⚖️ Fördela 100 poäng mellan miljökriterierna:</div>
-    <div id="env-sliders"></div>
-    
-    <div class="total-section">
-        <div class="total-display" id="envTotal">0</div>
-        <div class="points-remaining" id="envRemaining"></div>
-    </div>
-    
-    <div class="chart-container">
-        <canvas id="envChart"></canvas>
-    </div>
-</div>
+        <!-- MILJÖDIMENSIONEN -->
+        <div class="dimension-card environmental active" id="dim-environmental">
+            <div class="dimension-header">🌿 Miljödimensionen</div>
+            <div class="description-box-miljo">
+                <strong>Om miljödimensionen:</strong> Denna dimension handlar om åtgärdernas påverkan på den naturliga miljön. Det inkluderar både att åtgärda befintliga föroreningar och att främja biologisk mångfald.
+            </div>
+            <div class="instruction">⚖️ Fördela 100 poäng mellan miljökriterierna:</div>
+            <div id="env-sliders"></div>
+            <div class="total-section">
+                <div class="total-display" id="envTotal">0</div>
+                <div class="points-remaining" id="envRemaining"></div>
+            </div>
+            <div class="chart-container">
+                <canvas id="envChart"></canvas>
+            </div>
+        </div>
+        
         
         <!-- SOCIALA DIMENSIONEN -->
         <div class="dimension-card social" id="dim-social">
