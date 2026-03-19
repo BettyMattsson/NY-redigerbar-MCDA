@@ -44,6 +44,14 @@
             margin: 20px 0;
         }
         
+        .context-box-orange {
+             background-color: #fff3e0;    /* Ljus orange */
+             border-left: 5px solid #f39c12; /* Orange kant */
+             padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
         .step-indicator {
             display: flex;
             justify-content: space-between;
@@ -311,21 +319,42 @@
         
         <div class="context-box">
             <h3>📋 Bakgrund: Anneberg</h3>
-            <p>Anneberg står inför ett beslut om åtgärder för att hantera föroreningar och förbättra områdets miljö- och samhällsvärden.</p>
-            <p><strong>Enkäten har två steg:</strong></p>
+            <p>Anneberg är ett område i Partille kommun med flerbostadshus, Skulltorps grundskola och Annebergs förskola.</p>
+            <p>Anneberg upplever stora dagvattenutmaningar, och kommunen står nu inför ett beslut om val av dagvattenlösningar. 
+            Lösningarna väljs utifrån flera olika kriterier inom fyra dimensioner: Miljö, Social, Ekonomisk och Teknisk. Detta 
+            för att möjliggöra utvärdering av multifunktionalitet och hållbarhet.</p>
+            
+            <p><strong>Följande lösningar har valts att utredas:</strong></p>
             <ol>
-                <li><strong>Steg 1-4:</strong> Fördela 100 poäng inom varje dimension (miljö, socialt, ekonomiskt, tekniskt)</li>
-                <li><strong>Steg 5:</strong> Fördela 100 poäng mellan dimensionerna. Under varje dimension ser du dina tidigare viktningar.</li>
+                <li><strong>Makadamdike</strong> - stenfyllt dike.</li>
+                <li><strong>Gräsbeklätt makadamdike</strong> - stenfyllt dike med ett lager av gräs.</li>
+                <li><strong>Regnträdgård</strong> - växtbädd med till exempel blommor och gräs</li>
+                <li><strong>Makadamdike + Regnträdgård</strong> - kombinerad lösning </li>
+                <li><strong>Gräsbeklätt makadamdike + Regnträdgård</strong> - kombinerad lösning</li>
             </ol>
+            <p>Enkäten är den del av ett examensarbete på Chalmers Tekniska Högskola. Resultatet kommer att användas 
+                för att avgöra vilka dagvattenlösningar som är mest lämliga för Anneberg. Enkäten är anonym.</p>
         </div>
         
-        <div class="step-indicator">
-            <div class="step active" id="step1-indicator">Miljö</div>
-            <div class="step" id="step2-indicator">Socialt</div>
-            <div class="step" id="step3-indicator">Ekonomiskt</div>
-            <div class="step" id="step4-indicator">Tekniskt</div>
-            <div class="step" id="step5-indicator">Dimensioner</div>
-        </div>
+         <div class="context-box-orange">
+    <h3>📝 Din uppgift</h3>
+    <p>Din uppgift är att fördela 100 poäng för att reflektera dina personliga erfarenheter och åsikter. För att hjälpa dig i poängsättningen visas en tabell över hur alternativen presterar inom respektive dimension. 
+    Alternativen är poängsatta mellan <strong>-10 och +10</strong>, där <strong>0 är referensalternativet "Makadamdike"</strong>. En positiv poäng innebär att alternativet presterar bättre än makadamdiket, medan 
+    en negativ poäng innebär att det presterar sämre.</p>
+    
+    <p><strong>Enkäten har två steg:</strong></p>
+    <ol>
+        <li><strong>Steg 1-4:</strong> Fördela 100 poäng inom varje dimension (miljö, socialt, ekonomiskt, tekniskt)</li>
+        <li><strong>Steg 5:</strong> Fördela 100 poäng mellan dimensionerna. Under varje dimension ser du dina tidigare viktningar.</li>
+    </ol>
+    
+    <p>Fler poäng innebär att du anser att kriteriet eller dimensionen har stor betydelse för val av dagvattenlösning.
+    Du kan ändra de tilldelade poängen tills du anser att fördelningen reflekterar dina personliga erfarenheter och åsikter.</p>
+    
+    <p><i><strong>Exempel: </strong> Du ska tilldela poäng till två kriterier. Du tilldelar vardera 50 poäng eftersom du anser att båda kriterier är lika viktiga. 
+    Senare ska du återigen tilldela poäng till två andra kriterier. Denna gång anser du dock att det ena kriteriet är betydligt viktigare och ger 
+    det därför 80 poäng medan den andra får 20 poäng. Summan av poängen ska alltid bli 100 poäng.</i></p>
+</div>
         
         <!-- MILJÖDIMENSIONEN -->
         <div class="dimension-card environmental active" id="dim-environmental">
