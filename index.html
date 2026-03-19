@@ -397,27 +397,129 @@
             </div>
             
         <!-- TABELL -->
-<div style="background-color: #e8f5e9; padding: 15px; border-radius: 8px; margin: 15px 0;">
-    <p><strong>📊 Prestanda för alternativen:</strong></p>
-    <table style="width:100%; border-collapse: collapse;">
-        <tr>
-            <th style="padding: 8px; text-align: left;">Alternativ</th>
-            <th style="padding: 8px; text-align: center;">Närsalter</th>
-            <th style="padding: 8px; text-align: center;">PAH:er</th>
-            <th style="padding: 8px; text-align: center;">Tungmetaller</th>
-            <th style="padding: 8px; text-align: center;">Partiklar</th>
-            <th style="padding: 8px; text-align: center;">Biodiversitet</th>  <!-- NY -->
-        </tr>
-        <tr>
-            <td style="padding: 8px;">Makadamdike</td>
-            <td style="padding: 8px; text-align: center;">0</td>
-            <td style="padding: 8px; text-align: center;">0</td>
-            <td style="padding: 8px; text-align: center;">0</td>
-            <td style="padding: 8px; text-align: center;">0</td>
-            <td style="padding: 8px; text-align: center;">0</td>  <!-- NYTT -->
-        </tr>
-    </table>
+    <div style="background-color: #e8f5e9; padding: 15px; border-radius: 8px; margin: 15px 0;">
+        <p style="font-weight: bold; margin-bottom: 10px;">📊 Prestanda för alternativen inom miljödimensionen (jämfört med referensalternativet Makadamdike):</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+                <tr style="background-color: #27ae60; color: white;">
+                    <th style="padding: 8px; text-align: left;">Kriterium</th>
+                    <th style="padding: 8px; text-align: center;">Makadamdike</th>
+                    <th style="padding: 8px; text-align: center;">Gräsbeklätt makadamdike</th>
+                    <th style="padding: 8px; text-align: center;">Regnträdgård</th>
+                    <th style="padding: 8px; text-align: center;">Makadamdike + Regnträdgård</th>
+                    <th style="padding: 8px; text-align: center;">Gräsbeklätt + Regnträdgård</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px; font-weight: 500;">🌿 Åtgärda närsalter</td>
+                    <td style="padding: 8px; text-align: center;">0</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+3</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+7</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+6</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+8</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px; font-weight: 500;">🌿 Åtgärda PAH:er</td>
+                    <td style="padding: 8px; text-align: center;">0</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+2</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+5</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+4</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+6</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px; font-weight: 500;">🌿 Åtgärda tungmetaller</td>
+                    <td style="padding: 8px; text-align: center;">0</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+2</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+5</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+4</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+6</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px; font-weight: 500;">🌿 Åtgärda suspenderade partiklar</td>
+                    <td style="padding: 8px; text-align: center;">0</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+4</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+8</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+7</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+9</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; font-weight: 500;">🌿 Biologisk mångfald</td>
+                    <td style="padding: 8px; text-align: center;">0</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+3</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+9</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+7</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+9</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.8rem; margin-top: 8px; color: #666;">Positiva poäng = bättre rening/effekt än makadamdike (referens), negativa = sämre än makadamdike</p>
+    </div>
+    
+    <div class="instruction">⚖️ Fördela 100 poäng mellan miljökriterierna:</div>
+    <div id="env-sliders"></div>
+    
+    <div class="total-section">
+        <div class="total-display" id="envTotal">0</div>
+        <div class="points-remaining" id="envRemaining"></div>
+    </div>
+    
+    <div class="chart-container">
+        <canvas id="envChart"></canvas>
+    </div>
 </div>
+Fördelar med denna layout:
+✅ Lättare att jämföra - samma kriterium på samma rad
+✅ Mer kompakt - färre rader, bättre översikt
+✅ Konsekvent - samma struktur som din sociala dimension
+
+För sociala dimensionen (redan klar):
+Din sociala dimension är redan i rätt format med kriterier som rader.
+
+För ekonomiska dimensionen (anpassa till 2 kriterier):
+html
+<!-- EKONOMISKA DIMENSIONEN -->
+<div class="dimension-card economic" id="dim-economic">
+    <div class="dimension-header">💰 Ekonomiska dimensionen</div>
+    
+    <div class="description-box-ekonomi">
+        <strong>Om ekonomiska dimensionen:</strong> Handlar om anläggningskostnader och löpande underhållskostnader.
+    </div>
+    
+    <div style="background-color: #e6f0fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+        <p style="font-weight: bold; margin-bottom: 10px;">📊 Prestanda för alternativen inom ekonomiska dimensionen (jämfört med referensalternativet Makadamdike):</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+                <tr style="background-color: #3498db; color: white;">
+                    <th style="padding: 8px; text-align: left;">Kriterium</th>
+                    <th style="padding: 8px; text-align: center;">Makadamdike</th>
+                    <th style="padding: 8px; text-align: center;">Gräsbeklätt makadamdike</th>
+                    <th style="padding: 8px; text-align: center;">Regnträdgård</th>
+                    <th style="padding: 8px; text-align: center;">Makadamdike + Regnträdgård</th>
+                    <th style="padding: 8px; text-align: center;">Gräsbeklätt + Regnträdgård</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px; font-weight: 500;">💰 Anläggningskostnad</td>
+                    <td style="padding: 8px; text-align: center;">0</td>
+                    <td style="padding: 8px; text-align: center; color: #3498db;">-2</td>
+                    <td style="padding: 8px; text-align: center; color: #3498db;">-5</td>
+                    <td style="padding: 8px; text-align: center; color: #3498db;">-4</td>
+                    <td style="padding: 8px; text-align: center; color: #3498db;">-6</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; font-weight: 500;">📉 Underhållskostnad</td>
+                    <td style="padding: 8px; text-align: center;">0</td>
+                    <td style="padding: 8px; text-align: center; color: #3498db;">-1</td>
+                    <td style="padding: 8px; text-align: center; color: #3498db;">-4</td>
+                    <td style="padding: 8px; text-align: center; color: #3498db;">-3</td>
+                    <td style="padding: 8px; text-align: center; color: #3498db;">-5</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.8rem; margin-top: 8px; color: #666;">Negativa poäng = högre kostnad än makadamdike, positiva = lägre kostnad än makadamdike</p>
+    </div>
             
             
             <div class="instruction">⚖️ Fördela 100 poäng mellan miljökriterierna:</div>
