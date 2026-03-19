@@ -878,94 +878,102 @@
             checkIfSubmitReady();
         }
         
-        // UPPDATERA DIAGRAM
-        function updateDimensionChart(dimension) {
-            const chartMap = {
-                environmental: 'envChart',
-                social: 'socialChart',
-                economic: 'economicChart',
-                technical: 'technicalChart',
-                dimensions: 'dimensionsChart'
-            };
-            
-            const canvas = document.getElementById(chartMap[dimension]);
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const valuesArray = values[dimension];
-            
-            let labels, colors;
-            
-            if (dimension === 'environmental') {
-                labels = criteria.environmental.map(c => c.name);
-                colors = ['#27ae60', '#2ecc71', '#239b56', '#1e8449', '#196f3d'];
-            } else if (dimension === 'social') {
-                labels = criteria.social.map(c => c.name);
-                colors = ['#e67e22', '#f39c12'];
-            } else if (dimension === 'economic') {
-                labels = criteria.economic.map(c => c.name);
-                colors = ['#3498db', '#5dade2'];
-            } else if (dimension === 'technical') {
-                labels = criteria.technical.map(c => c.name);
-                colors = ['#9b59b6', '#af7ac5'];
-            } else {
-                labels = ['Miljö', 'Socialt', 'Ekonomiskt', 'Tekniskt'];
-                colors = ['#27ae60', '#e67e22', '#3498db', '#9b59b6'];
-            }
-            
-            const nonZeroValues = [];
-            const nonZeroLabels = [];
-            const nonZeroColors = [];
-            
-            valuesArray.forEach((val, idx) => {
-                if (val > 0) {
-                    nonZeroValues.push(val);
-                    nonZeroLabels.push(labels[idx]);
-                    nonZeroColors.push(colors[idx % colors.length]);
-                }
-            });
-            
-            if (nonZeroValues.length === 0) {
-                if (charts[dimension]) charts[dimension].destroy();
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.font = '14px Arial';
-                ctx.fillStyle = '#999';
-                ctx.fillText('Fördela poäng för att se diagram', 50, 150);
-                return;
-            }
-            
-            if (charts[dimension]) charts[dimension].destroy();
-            
-            charts[dimension] = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: nonZeroLabels,
-                    datasets: [{
-                        data: nonZeroValues,
-                        backgroundColor: nonZeroColors,
-                        borderWidth: 1,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percent = ((value / total) * 100).toFixed(1);
-                                    return `${label}: ${value} poäng (${percent}%)`;
-                                }
-                            }
+        // UPPDATERA DIAGRAM (för enskilda dimensioner)
+function updateDimensionChart(dimension) {
+    const chartMap = {
+        environmental: 'envChart',
+        social: 'socialChart',
+        economic: 'economicChart',
+        technical: 'technicalChart'
+    };
+    
+    const canvas = document.getElementById(chartMap[dimension]);
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const valuesArray = values[dimension];
+    
+    let labels;
+    let baseColor;
+    let colorShades = [];
+    
+    // Definiera basfärger och skapa gradienter
+    if (dimension === 'environmental') {
+        labels = criteria.environmental.map(c => c.name);
+        baseColor = '#27ae60'; // Grön
+        // Skapa 5 nyanser från ljus till mörk
+        colorShades = ['#a9d6a9', '#7cc47c', '#4fb24f', '#27ae60', '#1e8449'];
+    } else if (dimension === 'social') {
+        labels = criteria.social.map(c => c.name);
+        baseColor = '#e67e22'; // Orange
+        colorShades = ['#f7c59f', '#f3aa6f', '#ef8f3f', '#e67e22', '#b85e0f'];
+    } else if (dimension === 'economic') {
+        labels = criteria.economic.map(c => c.name);
+        baseColor = '#3498db'; // Blå
+        colorShades = ['#a6d0f0', '#7ab8e6', '#4ea0dc', '#3498db', '#1f618d'];
+    } else if (dimension === 'technical') {
+        labels = criteria.technical.map(c => c.name);
+        baseColor = '#9b59b6'; // Lila
+        colorShades = ['#d2b0e0', '#be8fcb', '#aa6eb6', '#9b59b6', '#6c3483'];
+    }
+    
+    // Filtrera bort noll-värden
+    const nonZeroIndices = [];
+    const nonZeroValues = [];
+    const nonZeroLabels = [];
+    const nonZeroColors = [];
+    
+    valuesArray.forEach((val, idx) => {
+        if (val > 0) {
+            nonZeroIndices.push(idx);
+            nonZeroValues.push(val);
+            nonZeroLabels.push(labels[idx]);
+            // Använd gradientfärg baserad på index (för att få samma ordning varje gång)
+            nonZeroColors.push(colorShades[idx % colorShades.length]);
+        }
+    });
+    
+    if (nonZeroValues.length === 0) {
+        if (charts[dimension]) charts[dimension].destroy();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#999';
+        ctx.fillText('Fördela poäng för att se diagram', 50, 150);
+        return;
+    }
+    
+    if (charts[dimension]) charts[dimension].destroy();
+    
+    charts[dimension] = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: nonZeroLabels,
+            datasets: [{
+                data: nonZeroValues,
+                backgroundColor: nonZeroColors,
+                borderWidth: 1,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percent = ((value / total) * 100).toFixed(1);
+                            return `${label}: ${value} poäng (${percent}%)`;
                         }
                     }
                 }
-            });
+            }
         }
+    });
+}
         
         // DIMENSION-SLIDERS
         function createDimensionSliders() {
@@ -1060,88 +1068,92 @@
             });
         }
         
-        // FINAL CHART
-        function calculateFinalWeights() {
-            const finalWeights = [];
-            const finalLabels = [];
-            const finalColors = [];
-            const dimColors = {
-                environmental: '#27ae60',
-                social: '#e67e22',
-                economic: '#3498db',
-                technical: '#9b59b6'
-            };
-            
-            const dims = [
-                { key: 'environmental', criteria: criteria.environmental },
-                { key: 'social', criteria: criteria.social },
-                { key: 'economic', criteria: criteria.economic },
-                { key: 'technical', criteria: criteria.technical }
-            ];
-            
-            dims.forEach((dim, dimIdx) => {
-                const dimWeight = values.dimensions[dimIdx];
-                dim.criteria.forEach((criterion, critIdx) => {
-                    const critWeight = values[dim.key][critIdx];
-                    if (critWeight > 0 && dimWeight > 0) {
-                        finalWeights.push((critWeight * dimWeight) / 100);
-                        finalLabels.push(criterion.name);
-                        finalColors.push(dimColors[dim.key]);
-                    }
-                });
-            });
-            
-            return { finalWeights, finalLabels, finalColors };
-        }
-        
-        function updateFinalChart() {
-            const canvas = document.getElementById('dimensionsChart');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const { finalWeights, finalLabels, finalColors } = calculateFinalWeights();
-            
-            if (finalWeights.length === 0) {
-                if (charts.dimensions) charts.dimensions.destroy();
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.font = '14px Arial';
-                ctx.fillStyle = '#999';
-                ctx.fillText('Fördela poäng för att se diagram', 50, 150);
-                return;
+// BERÄKNA SLUTGILTIGA VIKTER MED FÄRGKODNING
+function calculateFinalWeights() {
+    const finalWeights = [];
+    const finalLabels = [];
+    const finalColors = [];
+    
+    // Definiera färgpaletter för varje dimension (samma som ovan)
+    const colorPalettes = {
+        environmental: ['#a9d6a9', '#7cc47c', '#4fb24f', '#27ae60', '#1e8449'],
+        social: ['#f7c59f', '#f3aa6f', '#ef8f3f', '#e67e22', '#b85e0f'],
+        economic: ['#a6d0f0', '#7ab8e6', '#4ea0dc', '#3498db', '#1f618d'],
+        technical: ['#d2b0e0', '#be8fcb', '#aa6eb6', '#9b59b6', '#6c3483']
+    };
+    
+    // Lista över kriterier i samma ordning som de visas
+    const dims = [
+        { key: 'environmental', criteria: criteria.environmental, palette: colorPalettes.environmental },
+        { key: 'social', criteria: criteria.social, palette: colorPalettes.social },
+        { key: 'economic', criteria: criteria.economic, palette: colorPalettes.economic },
+        { key: 'technical', criteria: criteria.technical, palette: colorPalettes.technical }
+    ];
+    
+    dims.forEach((dim, dimIdx) => {
+        const dimWeight = values.dimensions[dimIdx];
+        dim.criteria.forEach((criterion, critIdx) => {
+            const critWeight = values[dim.key][critIdx];
+            if (critWeight > 0 && dimWeight > 0) {
+                finalWeights.push((critWeight * dimWeight) / 100);
+                finalLabels.push(criterion.name);
+                // Använd samma färg som i dimensionsdiagrammet
+                finalColors.push(dim.palette[critIdx % dim.palette.length]);
             }
-            
-            if (charts.dimensions) charts.dimensions.destroy();
-            
-            charts.dimensions = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: finalLabels,
-                    datasets: [{
-                        data: finalWeights,
-                        backgroundColor: finalColors,
-                        borderWidth: 1,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percent = ((value / total) * 100).toFixed(1);
-                                    return `${label}: ${value.toFixed(1)} poäng (${percent}%)`;
-                                }
-                            }
+        });
+    });
+    
+    return { finalWeights, finalLabels, finalColors };
+}
+
+function updateFinalChart() {
+    const canvas = document.getElementById('dimensionsChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const { finalWeights, finalLabels, finalColors } = calculateFinalWeights();
+    
+    if (finalWeights.length === 0) {
+        if (charts.dimensions) charts.dimensions.destroy();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#999';
+        ctx.fillText('Fördela poäng för att se diagram', 50, 150);
+        return;
+    }
+    
+    if (charts.dimensions) charts.dimensions.destroy();
+    
+    charts.dimensions = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: finalLabels,
+            datasets: [{
+                data: finalWeights,
+                backgroundColor: finalColors,
+                borderWidth: 1,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.raw || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percent = ((value / total) * 100).toFixed(1);
+                            return `${label}: ${value.toFixed(1)} poäng (${percent}%)`;
                         }
                     }
                 }
-            });
+            }
         }
+    });
+}
         
         // CHECK IF SUBMIT READY
         function checkIfSubmitReady() {
