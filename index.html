@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anneberg - Hierarkisk viktningsenkät</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #1a3e6f;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #1a3e6f;
+            padding-bottom: 10px;
+        }
+        
+        .context-box {
+            background-color: #e8f0fe;
+            border-left: 5px solid #1a3e6f;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            gap: 10px;
+        }
+        
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .step.active {
+            background-color: #1a3e6f;
+            color: white;
+        }
+        
+        .step.completed {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .dimension-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 2px solid;
+            display: none;
+        }
+        
+        .dimension-card.active {
+            display: block;
+        }
+        
+        .environmental { border-color: #27ae60; }
+        .social { border-color: #e67e22; }
+        .economic { border-color: #3498db; }
+        .technical { border-color: #9b59b6; }
+        .dimensions-weighting { border-color: #1a3e6f; }
+        
+        .dimension-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        
+        .environmental .dimension-header { color: #27ae60; }
+        .social .dimension-header { color: #e67e22; }
+        .economic .dimension-header { color: #3498db; }
+        .technical .dimension-header { color: #9b59b6; }
+        .dimensions-weighting .dimension-header { color: #1a3e6f; }
+        
+        .description-box {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #1a3e6f;
+        }
+        
+        .criterion-row {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            gap: 15px;
+        }
+        
+        .criterion-info {
+            flex: 2;
+        }
+        
+        .criterion-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .criterion-desc {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        
+        .slider-container {
+            flex: 2;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1a3e6f;
+            cursor: pointer;
+        }
+        
+        .input-container {
+            flex: 0.8;
+        }
+        
+        .point-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .value-box {
+            flex: 0.5;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #1a3e6f;
+            min-width: 60px;
+            background-color: #f0f4ff;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .total-section {
+            background-color: #f1f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: center;
+            border: 2px dashed #1a3e6f;
+        }
+        
+        .total-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .points-remaining {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        
+        .chart-container {
+            max-width: 400px;
+            margin: 30px auto;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+        
+        .nav-btn {
+            background-color: #1a3e6f;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: #0f2a4a;
+        }
+        
+        .nav-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .stakeholder-section {
+            background-color: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .primary-btn {
+            background-color: #1a3e6f;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .secondary-btn {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .status-message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hierarkisk viktningsenkät för Anneberg</h1>
+        
+        <div class="context-box">
+            <h3>📋 Bakgrund: Anneberg</h3>
+            <p>Anneberg står inför ett beslut om åtgärder för att hantera föroreningar och förbättra områdets miljö- och samhällsvärden.</p>
+            <p><strong>Enkäten har två steg:</strong></p>
+            <ol>
+                <li><strong>Steg 1-4:</strong> Fördela 100 poäng inom varje dimension (miljö, socialt, ekonomiskt, tekniskt)</li>
+                <li><strong>Steg 5:</strong> Fördela 100 poäng mellan dimensionerna. Under varje dimension ser du dina tidigare viktningar.</li>
+            </ol>
+        </div>
+        
+        <div class="step-indicator">
+            <div class="step active" id="step1-indicator">Miljö</div>
+            <div class="step" id="step2-indicator">Socialt</div>
+            <div class="step" id="step3-indicator">Ekonomiskt</div>
+            <div class="step" id="step4-indicator">Tekniskt</div>
+            <div class="step" id="step5-indicator">Dimensioner</div>
+        </div>
+        
+        <!-- MILJÖDIMENSIONEN -->
+        <div class="dimension-card environmental active" id="dim-environmental">
+            <div class="dimension-header">🌿 Miljödimensionen</div>
+            <div class="description-box">
+                <strong>Om miljödimensionen:</strong> Denna dimension handlar om åtgärdernas påverkan på den naturliga miljön. Det inkluderar både att åtgärda befintliga föroreningar och att främja biologisk mångfald.
+            </div>
+            <div class="instruction">⚖️ Fördela 100 poäng mellan miljökriterierna:</div>
+            <div id="env-sliders"></div>
+            <div class="total-section">
+                <div class="total-display" id="envTotal">0</div>
+                <div class="points-remaining" id="envRemaining"></div>
+            </div>
+            <div class="chart-container">
+                <canvas id="envChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- SOCIALA DIMENSIONEN -->
+        <div class="dimension-card social" id="dim-social">
+            <div class="dimension-header">👥 Sociala dimensionen</div>
+            <div class="description-box">
+                <strong>Om sociala dimensionen:</strong> Handlar om hur åtgärderna påverkar människors livskvalitet, rekreation och pedagogiska värden.
+            </div>
+            <div class="instruction">⚖️ Fördela 100 poäng mellan sociala kriterierna:</div>
+            <div id="social-sliders"></div>
+            <div class="total-section">
+                <div class="total-display" id="socialTotal">0</div>
+                <div class="points-remaining" id="socialRemaining"></div>
+            </div>
+            <div class="chart-container">
+                <canvas id="socialChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- EKONOMISKA DIMENSIONEN -->
+        <div class="dimension-card economic" id="dim-economic">
+            <div class="dimension-header">💰 Ekonomiska dimensionen</div>
+            <div class="description-box">
+                <strong>Om ekonomiska dimensionen:</strong> Handlar om anläggningskostnader och löpande underhållskostnader.
+            </div>
+            <div class="instruction">⚖️ Fördela 100 poäng mellan ekonomiska kriterierna:</div>
+            <div id="economic-sliders"></div>
+            <div class="total-section">
+                <div class="total-display" id="economicTotal">0</div>
+                <div class="points-remaining" id="economicRemaining"></div>
+            </div>
+            <div class="chart-container">
+                <canvas id="economicChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- TEKNISKA DIMENSIONEN -->
+        <div class="dimension-card technical" id="dim-technical">
+            <div class="dimension-header">⚙️ Tekniska dimensionen</div>
+            <div class="description-box">
+                <strong>Om tekniska dimensionen:</strong> Handlar om underhållsfrekvens och komplexitet.
+            </div>
+            <div class="instruction">⚖️ Fördela 100 poäng mellan tekniska kriterierna:</div>
+            <div id="technical-sliders"></div>
+            <div class="total-section">
+                <div class="total-display" id="technicalTotal">0</div>
+                <div class="points-remaining" id="technicalRemaining"></div>
+            </div>
+            <div class="chart-container">
+                <canvas id="technicalChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- DIMENSIONSVIKTNING MED KRITERIER UNDER -->
+        <div class="dimension-card dimensions-weighting" id="dim-dimensions">
+            <div class="dimension-header">⚖️ Viktning av dimensionerna</div>
+            
+            <div class="description-box">
+                <strong>📋 Dina viktningar inom varje dimension:</strong>
+                <p style="margin-top: 10px;">Fördela nu 100 poäng mellan dimensionerna nedan. Kriterierna du tidigare viktat visas under varje dimension.</p>
+            </div>
+            
+            <div id="dimensions-with-criteria"></div>
+            
+            <div class="total-section">
+                <div class="total-display" id="dimensionsTotal">0</div>
+                <div class="points-remaining" id="dimensionsRemaining"></div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="dimensionsChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- NAVIGERINGSKNAPPAR -->
+        <div class="navigation-buttons">
+            <button class="nav-btn" id="prevBtn" disabled>◀ Föregående</button>
+            <button class="nav-btn" id="nextBtn">Nästa ▶</button>
+        </div>
+        
+        <!-- STAKEHOLDER INFO MED TILLBAKA-KNAPP -->
+        <div class="stakeholder-section" id="stakeholder-section" style="display: none;">
+            <h3>Om dig</h3>
+            <select id="stakeholderRole" required>
+                <option value="" disabled selected>Välj din roll...</option>
+                <option value="boende">Boende i området</option>
+                <option value="foretagare">Lokal företagare</option>
+                <option value="miljoorganisation">Miljöorganisation</option>
+                <option value="kommun">Kommun / Myndighet</option>
+                <option value="forskare">Forskare / Expert</option>
+                <option value="annan">Annan</option>
+            </select>
+            
+            <textarea id="comments" rows="5" placeholder="Har du reflektioner kring din viktning? (valfritt)"></textarea>
+            
+            <div class="button-group">
+                <button class="secondary-btn" id="backFromSubmitBtn">◀ Tillbaka</button>
+                <button class="primary-btn" id="submitBtn" disabled>Skicka in min viktning</button>
+            </div>
+            <div id="statusMessage" class="status-message"></div>
+        </div>
+    </div>
+
+    <script>
+        // ALLA KRITERIER MED BESKRIVNINGAR
+        const criteria = {
+            environmental: [
+                { id: "nutrients", name: "Åtgärda närsalter", desc: "Minska utsläpp av kväve och fosfor." },
+                { id: "pahs", name: "Åtgärda PAH:er", desc: "Polycykliska aromatiska kolväten." },
+                { id: "heavymetals", name: "Åtgärda tungmetaller", desc: "Bly, kadmium, kvicksilver." },
+                { id: "particles", name: "Åtgärda suspenderade partiklar", desc: "Grumlighet och sediment." },
+                { id: "biodiversity", name: "Biologisk mångfald", desc: "Variation av växter och djur." }
+            ],
+            social: [
+                { id: "recreation", name: "Rekreation och attraktivitet", desc: "Friluftsliv och avkoppling." },
+                { id: "education", name: "Utbildning", desc: "Pedagogiska värden." }
+            ],
+            economic: [
+                { id: "installcost", name: "Anläggningskostnad", desc: "Initial kostnad för åtgärden." },
+                { id: "maintenancecost", name: "Underhållskostnad", desc: "Löpande kostnader." }
+            ],
+            technical: [
+                { id: "frequency", name: "Underhållsfrekvens", desc: "Hur ofta underhåll behövs." },
+                { id: "complexity", name: "Underhållskomplexitet", desc: "Hur komplicerat underhållet är." }
+            ]
+        };
+        
+        // STATE FÖR ALLA VÄRDEN
+        let values = {
+            environmental: [0, 0, 0, 0, 0],
+            social: [0, 0],
+            economic: [0, 0],
+            technical: [0, 0],
+            dimensions: [0, 0, 0, 0]
+        };
+        
+        let charts = {
+            environmental: null,
+            social: null,
+            economic: null,
+            technical: null,
+            dimensions: null
+        };
+        
+        let currentStep = 0;
+        const steps = ['environmental', 'social', 'economic', 'technical', 'dimensions'];
+        
+        // GENERERA SLIDERS
+        function generateSliders(dimension, containerId, valuesArray, criteriaArray) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            criteriaArray.forEach((criterion, index) => {
+                const row = document.createElement('div');
+                row.className = 'criterion-row';
+                
+                row.innerHTML = `
+                    <div class="criterion-info">
+                        <div class="criterion-name">${criterion.name}</div>
+                        <div class="criterion-desc">${criterion.desc}</div>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range" class="slider" id="${dimension}-slider-${index}" min="0" max="100" value="${valuesArray[index]}">
+                    </div>
+                    <div class="input-container">
+                        <input type="number" class="point-input" id="${dimension}-input-${index}" min="0" max="100" value="${valuesArray[index]}">
+                    </div>
+                    <div class="value-box" id="${dimension}-value-${index}">${valuesArray[index]}</div>
+                `;
+                
+                container.appendChild(row);
+                
+                const slider = document.getElementById(`${dimension}-slider-${index}`);
+                const input = document.getElementById(`${dimension}-input-${index}`);
+                
+                slider.addEventListener('input', function(e) {
+                    const val = parseInt(e.target.value) || 0;
+                    updateValue(dimension, index, val);
+                });
+                
+                input.addEventListener('input', function(e) {
+                    let val = parseInt(e.target.value);
+                    if (isNaN(val)) val = 0;
+                    if (val < 0) val = 0;
+                    if (val > 100) val = 100;
+                    updateValue(dimension, index, val);
+                });
+            });
+        }
+        
+        // UPPDATERA VÄRDE
+        function updateValue(dimension, index, val) {
+            values[dimension][index] = val;
+            
+            const slider = document.getElementById(`${dimension}-slider-${index}`);
+            const input = document.getElementById(`${dimension}-input-${index}`);
+            const valueDiv = document.getElementById(`${dimension}-value-${index}`);
+            
+            if (slider) slider.value = val;
+            if (input) input.value = val;
+            if (valueDiv) valueDiv.textContent = val;
+            
+            updateDimensionTotal(dimension);
+            updateDimensionChart(dimension);
+            
+            if (currentStep === 4) {
+                createDimensionSliders();
+            }
+        }
+        
+        // UPPDATERA TOTAL
+        function updateDimensionTotal(dimension) {
+            const sum = values[dimension].reduce((a, b) => a + b, 0);
+            
+            const totalMap = {
+                environmental: 'envTotal',
+                social: 'socialTotal',
+                economic: 'economicTotal',
+                technical: 'technicalTotal',
+                dimensions: 'dimensionsTotal'
+            };
+            
+            const remainingMap = {
+                environmental: 'envRemaining',
+                social: 'socialRemaining',
+                economic: 'economicRemaining',
+                technical: 'technicalRemaining',
+                dimensions: 'dimensionsRemaining'
+            };
+            
+            const totalEl = document.getElementById(totalMap[dimension]);
+            const remainingEl = document.getElementById(remainingMap[dimension]);
+            
+            if (totalEl) {
+                totalEl.textContent = sum;
+                totalEl.style.color = sum === 100 ? '#27ae60' : '#e74c3c';
+            }
+            
+            if (remainingEl) {
+                const remaining = 100 - sum;
+                if (remaining > 0) {
+                    remainingEl.innerHTML = `📊 <strong>${remaining} poäng kvar</strong>`;
+                    remainingEl.style.color = '#e67e22';
+                } else if (remaining < 0) {
+                    remainingEl.innerHTML = `⚠️ <strong>${Math.abs(remaining)} poäng för mycket</strong>`;
+                    remainingEl.style.color = '#e74c3c';
+                } else {
+                    remainingEl.innerHTML = '✅ <strong>Perfekt!</strong>';
+                    remainingEl.style.color = '#27ae60';
+                }
+            }
+            
+            if (dimension !== 'dimensions') {
+                const stepIndex = steps.indexOf(dimension);
+                const indicator = document.getElementById(`step${stepIndex+1}-indicator`);
+                if (indicator) {
+                    if (sum === 100) {
+                        indicator.classList.add('completed');
+                    } else {
+                        indicator.classList.remove('completed');
+                    }
+                }
+            }
+            
+            if (currentStep < 4) {
+                const currentSum = values[steps[currentStep]].reduce((a, b) => a + b, 0);
+                document.getElementById('nextBtn').disabled = currentSum !== 100;
+            } else if (currentStep === 4) {
+                const dimSum = values.dimensions.reduce((a, b) => a + b, 0);
+                document.getElementById('nextBtn').disabled = dimSum !== 100;
+            }
+            
+            checkIfSubmitReady();
+        }
+        
+        // UPPDATERA DIAGRAM
+        function updateDimensionChart(dimension) {
+            const chartMap = {
+                environmental: 'envChart',
+                social: 'socialChart',
+                economic: 'economicChart',
+                technical: 'technicalChart',
+                dimensions: 'dimensionsChart'
+            };
+            
+            const canvas = document.getElementById(chartMap[dimension]);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const valuesArray = values[dimension];
+            
+            let labels, colors;
+            
+            if (dimension === 'environmental') {
+                labels = criteria.environmental.map(c => c.name);
+                colors = ['#27ae60', '#2ecc71', '#239b56', '#1e8449', '#196f3d'];
+            } else if (dimension === 'social') {
+                labels = criteria.social.map(c => c.name);
+                colors = ['#e67e22', '#f39c12'];
+            } else if (dimension === 'economic') {
+                labels = criteria.economic.map(c => c.name);
+                colors = ['#3498db', '#5dade2'];
+            } else if (dimension === 'technical') {
+                labels = criteria.technical.map(c => c.name);
+                colors = ['#9b59b6', '#af7ac5'];
+            } else {
+                labels = ['Miljö', 'Socialt', 'Ekonomiskt', 'Tekniskt'];
+                colors = ['#27ae60', '#e67e22', '#3498db', '#9b59b6'];
+            }
+            
+            const nonZeroValues = [];
+            const nonZeroLabels = [];
+            const nonZeroColors = [];
+            
+            valuesArray.forEach((val, idx) => {
+                if (val > 0) {
+                    nonZeroValues.push(val);
+                    nonZeroLabels.push(labels[idx]);
+                    nonZeroColors.push(colors[idx % colors.length]);
+                }
+            });
+            
+            if (nonZeroValues.length === 0) {
+                if (charts[dimension]) charts[dimension].destroy();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#999';
+                ctx.fillText('Fördela poäng för att se diagram', 50, 150);
+                return;
+            }
+            
+            if (charts[dimension]) charts[dimension].destroy();
+            
+            charts[dimension] = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: nonZeroLabels,
+                    datasets: [{
+                        data: nonZeroValues,
+                        backgroundColor: nonZeroColors,
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percent = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} poäng (${percent}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // DIMENSION-SLIDERS
+        function createDimensionSliders() {
+            const container = document.getElementById('dimensions-with-criteria');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const dimensions = [
+                { name: 'Miljö', key: 'environmental', color: '#27ae60', criteria: criteria.environmental },
+                { name: 'Socialt', key: 'social', color: '#e67e22', criteria: criteria.social },
+                { name: 'Ekonomiskt', key: 'economic', color: '#3498db', criteria: criteria.economic },
+                { name: 'Tekniskt', key: 'technical', color: '#9b59b6', criteria: criteria.technical }
+            ];
+            
+            dimensions.forEach((dim, dimIndex) => {
+                const dimContainer = document.createElement('div');
+                dimContainer.style.marginBottom = '30px';
+                dimContainer.style.border = `2px solid ${dim.color}`;
+                dimContainer.style.borderRadius = '10px';
+                dimContainer.style.padding = '15px';
+                dimContainer.style.backgroundColor = '#f8f9fa';
+                
+                const headerRow = document.createElement('div');
+                headerRow.style.display = 'flex';
+                headerRow.style.alignItems = 'center';
+                headerRow.style.marginBottom = '15px';
+                headerRow.style.padding = '10px';
+                headerRow.style.backgroundColor = dim.color + '20';
+                headerRow.style.borderRadius = '8px';
+                headerRow.style.gap = '15px';
+                
+                headerRow.innerHTML = `
+                    <div style="flex: 1;">
+                        <strong style="color: ${dim.color};">${dim.name}</strong>
+                    </div>
+                    <div style="flex: 2;">
+                        <input type="range" class="slider" id="dimensions-slider-${dimIndex}" min="0" max="100" value="${values.dimensions[dimIndex]}" style="width: 100%;">
+                    </div>
+                    <div style="flex: 0.8;">
+                        <input type="number" class="point-input" id="dimensions-input-${dimIndex}" min="0" max="100" value="${values.dimensions[dimIndex]}" style="width: 100%;">
+                    </div>
+                    <div style="flex: 0.5; text-align: center; font-weight: bold; color: ${dim.color};" id="dimensions-value-${dimIndex}">${values.dimensions[dimIndex]}</div>
+                `;
+                
+                dimContainer.appendChild(headerRow);
+                
+                const criteriaList = document.createElement('div');
+                criteriaList.style.marginLeft = '20px';
+                criteriaList.style.padding = '10px';
+                criteriaList.style.backgroundColor = 'white';
+                criteriaList.style.borderRadius = '8px';
+                
+                dim.criteria.forEach((criterion, critIndex) => {
+                    if (values[dim.key][critIndex] > 0) {
+                        const critRow = document.createElement('div');
+                        critRow.style.padding = '5px 10px';
+                        critRow.style.borderBottom = '1px solid #eee';
+                        critRow.style.color = '#666';
+                        critRow.innerHTML = `• ${criterion.name}`;
+                        criteriaList.appendChild(critRow);
+                    }
+                });
+                
+                if (criteriaList.children.length > 0) {
+                    dimContainer.appendChild(criteriaList);
+                }
+                
+                container.appendChild(dimContainer);
+                
+                const slider = document.getElementById(`dimensions-slider-${dimIndex}`);
+                const input = document.getElementById(`dimensions-input-${dimIndex}`);
+                const valueDiv = document.getElementById(`dimensions-value-${dimIndex}`);
+                
+                const updateDimension = (val) => {
+                    values.dimensions[dimIndex] = val;
+                    slider.value = val;
+                    input.value = val;
+                    valueDiv.textContent = val;
+                    updateDimensionTotal('dimensions');
+                    updateFinalChart();
+                };
+                
+                slider.addEventListener('input', (e) => updateDimension(parseInt(e.target.value) || 0));
+                input.addEventListener('input', (e) => {
+                    let val = parseInt(e.target.value);
+                    if (isNaN(val)) val = 0;
+                    if (val < 0) val = 0;
+                    if (val > 100) val = 100;
+                    updateDimension(val);
+                });
+            });
+        }
+        
+        // FINAL CHART
+        function calculateFinalWeights() {
+            const finalWeights = [];
+            const finalLabels = [];
+            const finalColors = [];
+            const dimColors = {
+                environmental: '#27ae60',
+                social: '#e67e22',
+                economic: '#3498db',
+                technical: '#9b59b6'
+            };
+            
+            const dims = [
+                { key: 'environmental', criteria: criteria.environmental },
+                { key: 'social', criteria: criteria.social },
+                { key: 'economic', criteria: criteria.economic },
+                { key: 'technical', criteria: criteria.technical }
+            ];
+            
+            dims.forEach((dim, dimIdx) => {
+                const dimWeight = values.dimensions[dimIdx];
+                dim.criteria.forEach((criterion, critIdx) => {
+                    const critWeight = values[dim.key][critIdx];
+                    if (critWeight > 0 && dimWeight > 0) {
+                        finalWeights.push((critWeight * dimWeight) / 100);
+                        finalLabels.push(criterion.name);
+                        finalColors.push(dimColors[dim.key]);
+                    }
+                });
+            });
+            
+            return { finalWeights, finalLabels, finalColors };
+        }
+        
+        function updateFinalChart() {
+            const canvas = document.getElementById('dimensionsChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const { finalWeights, finalLabels, finalColors } = calculateFinalWeights();
+            
+            if (finalWeights.length === 0) {
+                if (charts.dimensions) charts.dimensions.destroy();
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#999';
+                ctx.fillText('Fördela poäng för att se diagram', 50, 150);
+                return;
+            }
+            
+            if (charts.dimensions) charts.dimensions.destroy();
+            
+            charts.dimensions = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: finalLabels,
+                    datasets: [{
+                        data: finalWeights,
+                        backgroundColor: finalColors,
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percent = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value.toFixed(1)} poäng (${percent}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // CHECK IF SUBMIT READY
+        function checkIfSubmitReady() {
+            const roleSelected = document.getElementById('stakeholderRole').value;
+            const dimensionsDone = values.dimensions.reduce((a, b) => a + b, 0) === 100;
+            document.getElementById('submitBtn').disabled = !(roleSelected && dimensionsDone);
+        }
+        
+        // INIT
+        document.addEventListener('DOMContentLoaded', function() {
+            generateSliders('environmental', 'env-sliders', values.environmental, criteria.environmental);
+            generateSliders('social', 'social-sliders', values.social, criteria.social);
+            generateSliders('economic', 'economic-sliders', values.economic, criteria.economic);
+            generateSliders('technical', 'technical-sliders', values.technical, criteria.technical);
+            createDimensionSliders();
+            
+            updateDimensionTotal('environmental');
+            updateDimensionTotal('social');
+            updateDimensionTotal('economic');
+            updateDimensionTotal('technical');
+            updateDimensionTotal('dimensions');
+            
+            setTimeout(() => {
+                updateDimensionChart('environmental');
+                updateDimensionChart('social');
+                updateDimensionChart('economic');
+                updateDimensionChart('technical');
+                updateDimensionChart('dimensions');
+            }, 100);
+        });
+        
+        // NAVIGERING
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (currentStep === 4) {
+                document.querySelectorAll('.dimension-card').forEach(c => c.classList.remove('active'));
+                document.getElementById('stakeholder-section').style.display = 'block';
+                this.style.display = 'none';
+                document.getElementById('prevBtn').style.display = 'none';
+                
+                for (let i = 0; i < 5; i++) {
+                    const ind = document.getElementById(`step${i+1}-indicator`);
+                    if (ind) {
+                        if (i === 4) ind.classList.add('completed');
+                        ind.classList.remove('active');
+                    }
+                }
+                currentStep = 5;
+            } else {
+                document.querySelectorAll('.dimension-card').forEach(c => c.classList.remove('active'));
+                document.getElementById(`dim-${steps[currentStep + 1]}`)?.classList.add('active');
+                
+                for (let i = 0; i < 5; i++) {
+                    const ind = document.getElementById(`step${i+1}-indicator`);
+                    if (ind) {
+                        if (i === currentStep + 1) ind.classList.add('active');
+                        else ind.classList.remove('active');
+                    }
+                }
+                
+                currentStep++;
+                document.getElementById('prevBtn').disabled = false;
+                if (currentStep === 4) {
+                    this.textContent = 'Slutför viktning ▶';
+                    createDimensionSliders();
+                }
+            }
+        });
+        
+        document.getElementById('prevBtn').addEventListener('click', function() {
+            if (currentStep > 0) {
+                document.querySelectorAll('.dimension-card').forEach(c => c.classList.remove('active'));
+                document.getElementById(`dim-${steps[currentStep - 1]}`)?.classList.add('active');
+                
+                for (let i = 0; i < 5; i++) {
+                    const ind = document.getElementById(`step${i+1}-indicator`);
+                    if (ind) {
+                        if (i === currentStep - 1) ind.classList.add('active');
+                        else ind.classList.remove('active');
+                    }
+                }
+                
+                currentStep--;
+                document.getElementById('prevBtn').disabled = currentStep === 0;
+                if (currentStep < 4) {
+                    document.getElementById('nextBtn').textContent = 'Nästa ▶';
+                }
+            }
+        });
+        
+        // TILLBAKA
+        document.getElementById('backFromSubmitBtn').addEventListener('click', function() {
+            document.getElementById('stakeholder-section').style.display = 'none';
+            document.getElementById('dim-dimensions').classList.add('active');
+            document.getElementById('nextBtn').style.display = 'block';
+            document.getElementById('prevBtn').style.display = 'block';
+            
+            for (let i = 0; i < 5; i++) {
+                const ind = document.getElementById(`step${i+1}-indicator`);
+                if (ind) {
+                    if (i === 4) {
+                        ind.classList.add('active');
+                        ind.classList.remove('completed');
+                    } else {
+                        ind.classList.remove('active');
+                    }
+                }
+            }
+            currentStep = 4;
+        });
+        
+        // SUBMIT (FormData-version)
+        document.getElementById('submitBtn').addEventListener('click', async function() {
+            const role = document.getElementById('stakeholderRole').value;
+            if (!role) {
+                alert('Vänligen välj din roll!');
+                return;
+            }
+            
+            this.disabled = true;
+            this.textContent = 'Skickar...';
+            
+            const formData = new FormData();
+            formData.append('timestamp', new Date().toLocaleString('sv-SE'));
+            formData.append('role', role);
+            formData.append('comments', document.getElementById('comments').value || '');
+            formData.append('nutrients', values.environmental[0]);
+            formData.append('pahs', values.environmental[1]);
+            formData.append('heavymetals', values.environmental[2]);
+            formData.append('particles', values.environmental[3]);
+            formData.append('biodiversity', values.environmental[4]);
+            formData.append('recreation', values.social[0]);
+            formData.append('education', values.social[1]);
+            formData.append('installcost', values.economic[0]);
+            formData.append('maintenancecost', values.economic[1]);
+            formData.append('frequency', values.technical[0]);
+            formData.append('complexity', values.technical[1]);
+            formData.append('dimension_environmental', values.dimensions[0]);
+            formData.append('dimension_social', values.dimensions[1]);
+            formData.append('dimension_economic', values.dimensions[2]);
+            formData.append('dimension_technical', values.dimensions[3]);
+            
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwlTWQSLQDDaXF7vocMKazTcXiY76ibnQ8uvk8eUxOxQjhnJiz2J6_dGwhe1eno2MJl/exec';
+            
+            try {
+                await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+                
+                document.getElementById('statusMessage').className = 'status-message status-success';
+                document.getElementById('statusMessage').innerHTML = '✅ Tack för dina svar! Din viktning har sparats.';
+                document.getElementById('statusMessage').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Fel:', error);
+                document.getElementById('statusMessage').className = 'status-message status-error';
+                document.getElementById('statusMessage').innerHTML = '❌ Ett fel uppstod: ' + error.message;
+                document.getElementById('statusMessage').style.display = 'block';
+                this.disabled = false;
+                this.textContent = 'Skicka in min viktning';
+            }
+        });
+        
+        // EVENT LISTENERS FÖR SUBMIT-KNAPP
+        document.getElementById('stakeholderRole').addEventListener('change', checkIfSubmitReady);
+        
+        function addDimensionListeners() {
+            for (let i = 0; i < 4; i++) {
+                const slider = document.getElementById(`dimensions-slider-${i}`);
+                const input = document.getElementById(`dimensions-input-${i}`);
+                if (slider) slider.addEventListener('input', checkIfSubmitReady);
+                if (input) input.addEventListener('input', checkIfSubmitReady);
+            }
+        }
+        setTimeout(addDimensionListeners, 500);
+    </script>
+</body>
+</html>
