@@ -902,19 +902,19 @@ function updateDimensionChart(dimension) {
         labels = criteria.environmental.map(c => c.name);
         baseColor = '#27ae60'; // Grön
         // Skapa 5 nyanser från ljus till mörk
-        colorShades = ['#a9d6a9', '#7cc47c', '#4fb24f', '#27ae60', '#1e8449'];
+        colorShades = ['#c8e6c9', 'a5d6a7', '#81c784', '#66bb6a', '#4caf50'];
     } else if (dimension === 'social') {
         labels = criteria.social.map(c => c.name);
         baseColor = '#e67e22'; // Orange
-        colorShades = ['#f7c59f', '#f3aa6f', '#ef8f3f', '#e67e22', '#b85e0f'];
+        colorShades = ['#f7c59f', '#ffb74d', '#ef8f3f', '#e67e22', '#b85e0f'];
     } else if (dimension === 'economic') {
         labels = criteria.economic.map(c => c.name);
         baseColor = '#3498db'; // Blå
-        colorShades = ['#a6d0f0', '#7ab8e6', '#4ea0dc', '#3498db', '#1f618d'];
+        colorShades = ['#a6d0f0', '#64b5f6', '#4ea0dc', '#3498db', '#1f618d'];
     } else if (dimension === 'technical') {
         labels = criteria.technical.map(c => c.name);
         baseColor = '#9b59b6'; // Lila
-        colorShades = ['#d2b0e0', '#be8fcb', '#aa6eb6', '#9b59b6', '#6c3483'];
+        colorShades = ['#d2b0e0', '#ba68c8', '#aa6eb6', '#9b59b6', '#6c3483'];
     }
     
     // Filtrera bort noll-värden
