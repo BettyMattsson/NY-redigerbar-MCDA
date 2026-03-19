@@ -456,7 +456,7 @@
         <p style="font-size: 0.8rem; margin-top: 8px; color: #666;">Positiva poäng = bättre rening/effekt än makadamdike (referens), negativa = sämre än makadamdike</p>
     </div>
     
-    <div class="instruction">⚖️ Fördela 100 poäng mellan miljökriterierna:</div>
+   <div class="instruction">⚖️ Fördela 100 poäng mellan miljökriterierna:</div>
     <div id="env-sliders"></div>
     
     <div class="total-section">
@@ -468,17 +468,66 @@
         <canvas id="envChart"></canvas>
     </div>
 </div>
-Fördelar med denna layout:
-✅ Lättare att jämföra - samma kriterium på samma rad
-✅ Mer kompakt - färre rader, bättre översikt
-✅ Konsekvent - samma struktur som din sociala dimension
-
-För sociala dimensionen (redan klar):
-Din sociala dimension är redan i rätt format med kriterier som rader.
-
-För ekonomiska dimensionen (anpassa till 2 kriterier):
-html
-<!-- EKONOMISKA DIMENSIONEN -->
+        
+        <!-- SOCIALA DIMENSIONEN -->
+<div class="dimension-card social" id="dim-social">
+    <div class="dimension-header">👥 Sociala dimensionen</div>
+    
+    <div class="description-box-social">
+        <strong>Om sociala dimensionen:</strong> Handlar om hur åtgärderna påverkar människors livskvalitet, rekreation och pedagogiska värden.
+    </div>
+    
+    <!-- PRESTANDATABELL FÖR SOCIALT MED TVÅ KRITERIER -->
+    <div style="background-color: #fff4e6; padding: 15px; border-radius: 8px; margin: 15px 0;">
+        <p style="font-weight: bold; margin-bottom: 10px;">📊 Prestanda för alternativen inom sociala dimensionen (jämfört med referensalternativet Makadamdike):</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <tr style="background-color: #e67e22; color: white;">
+                <th style="padding: 8px; text-align: left;">Alternativ</th>
+                <th style="padding: 8px; text-align: center;">👥 Rekreation och attraktivitet (-10 till +10)</th>
+                <th style="padding: 8px; text-align: center;">📚 Utbildning (-10 till +10)</th>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Makadamdike</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold;">0 (referens)</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold;">0 (referens)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Gräsbeklätt makadamdike</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #e67e22;">+3</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #e67e22;">+2</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #e67e22;">+9</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #e67e22;">+8</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Makadamdike + Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #e67e22;">+6</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #e67e22;">+5</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">Gräsbeklätt makadamdike + Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #e67e22;">+8</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #e67e22;">+7</td>
+            </tr>
+        </table>
+        <p style="font-size: 0.8rem; margin-top: 8px; color: #666;">Positiva poäng = bättre än makadamdike, negativa = sämre än makadamdike</p>
+    </div>
+    
+    <div class="instruction">⚖️ Fördela 100 poäng mellan sociala kriterierna:</div>
+    <div id="social-sliders"></div>
+    
+    <div class="total-section">
+        <div class="total-display" id="socialTotal">0</div>
+        <div class="points-remaining" id="socialRemaining"></div>
+    </div>
+    
+    <div class="chart-container">
+        <canvas id="socialChart"></canvas>
+    </div>
+</div>
+        <!-- EKONOMISKA DIMENSIONEN -->
 <div class="dimension-card economic" id="dim-economic">
     <div class="dimension-header">💰 Ekonomiska dimensionen</div>
     
@@ -486,104 +535,115 @@ html
         <strong>Om ekonomiska dimensionen:</strong> Handlar om anläggningskostnader och löpande underhållskostnader.
     </div>
     
+    <!-- PRESTANDATABELL FÖR EKONOMI -->
     <div style="background-color: #e6f0fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
         <p style="font-weight: bold; margin-bottom: 10px;">📊 Prestanda för alternativen inom ekonomiska dimensionen (jämfört med referensalternativet Makadamdike):</p>
         <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
-            <thead>
-                <tr style="background-color: #3498db; color: white;">
-                    <th style="padding: 8px; text-align: left;">Kriterium</th>
-                    <th style="padding: 8px; text-align: center;">Makadamdike</th>
-                    <th style="padding: 8px; text-align: center;">Gräsbeklätt makadamdike</th>
-                    <th style="padding: 8px; text-align: center;">Regnträdgård</th>
-                    <th style="padding: 8px; text-align: center;">Makadamdike + Regnträdgård</th>
-                    <th style="padding: 8px; text-align: center;">Gräsbeklätt + Regnträdgård</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px; font-weight: 500;">💰 Anläggningskostnad</td>
-                    <td style="padding: 8px; text-align: center;">0</td>
-                    <td style="padding: 8px; text-align: center; color: #3498db;">-2</td>
-                    <td style="padding: 8px; text-align: center; color: #3498db;">-5</td>
-                    <td style="padding: 8px; text-align: center; color: #3498db;">-4</td>
-                    <td style="padding: 8px; text-align: center; color: #3498db;">-6</td>
-                </tr>
-                <tr>
-                    <td style="padding: 8px; font-weight: 500;">📉 Underhållskostnad</td>
-                    <td style="padding: 8px; text-align: center;">0</td>
-                    <td style="padding: 8px; text-align: center; color: #3498db;">-1</td>
-                    <td style="padding: 8px; text-align: center; color: #3498db;">-4</td>
-                    <td style="padding: 8px; text-align: center; color: #3498db;">-3</td>
-                    <td style="padding: 8px; text-align: center; color: #3498db;">-5</td>
-                </tr>
-            </tbody>
+            <tr style="background-color: #3498db; color: white;">
+                <th style="padding: 8px; text-align: left;">Alternativ</th>
+                <th style="padding: 8px; text-align: center;">💰 Anläggningskostnad (-10 till +10)</th>
+                <th style="padding: 8px; text-align: center;">📉 Underhållskostnad (-10 till +10)</th>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Makadamdike</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold;">0 (referens)</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold;">0 (referens)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Gräsbeklätt makadamdike</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #3498db;">-2</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #3498db;">-1</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #3498db;">-5</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #3498db;">-4</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Makadamdike + Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #3498db;">-4</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #3498db;">-3</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">Gräsbeklätt makadamdike + Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #3498db;">-6</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #3498db;">-5</td>
+            </tr>
         </table>
         <p style="font-size: 0.8rem; margin-top: 8px; color: #666;">Negativa poäng = högre kostnad än makadamdike, positiva = lägre kostnad än makadamdike</p>
     </div>
-            
-            
-            <div class="instruction">⚖️ Fördela 100 poäng mellan miljökriterierna:</div>
-            <div id="env-sliders"></div>
-            <div class="total-section">
-                <div class="total-display" id="envTotal">0</div>
-                <div class="points-remaining" id="envRemaining"></div>
-            </div>
-            <div class="chart-container">
-                <canvas id="envChart"></canvas>
-            </div>
-        </div>
+    
+    <div class="instruction">⚖️ Fördela 100 poäng mellan ekonomiska kriterierna:</div>
+    <div id="economic-sliders"></div>
+    
+    <div class="total-section">
+        <div class="total-display" id="economicTotal">0</div>
+        <div class="points-remaining" id="economicRemaining"></div>
+    </div>
+    
+    <div class="chart-container">
+        <canvas id="economicChart"></canvas>
+    </div>
+</div>
         
-        
-        <!-- SOCIALA DIMENSIONEN -->
-        <div class="dimension-card social" id="dim-social">
-            <div class="dimension-header">👥 Sociala dimensionen</div>
-            <div class="description-box">
-                <strong>Om sociala dimensionen:</strong> Handlar om hur åtgärderna påverkar människors livskvalitet, rekreation och pedagogiska värden.
-            </div>
-            <div class="instruction">⚖️ Fördela 100 poäng mellan sociala kriterierna:</div>
-            <div id="social-sliders"></div>
-            <div class="total-section">
-                <div class="total-display" id="socialTotal">0</div>
-                <div class="points-remaining" id="socialRemaining"></div>
-            </div>
-            <div class="chart-container">
-                <canvas id="socialChart"></canvas>
-            </div>
-        </div>
-        
-        <!-- EKONOMISKA DIMENSIONEN -->
-        <div class="dimension-card economic" id="dim-economic">
-            <div class="dimension-header">💰 Ekonomiska dimensionen</div>
-            <div class="description-box">
-                <strong>Om ekonomiska dimensionen:</strong> Handlar om anläggningskostnader och löpande underhållskostnader.
-            </div>
-            <div class="instruction">⚖️ Fördela 100 poäng mellan ekonomiska kriterierna:</div>
-            <div id="economic-sliders"></div>
-            <div class="total-section">
-                <div class="total-display" id="economicTotal">0</div>
-                <div class="points-remaining" id="economicRemaining"></div>
-            </div>
-            <div class="chart-container">
-                <canvas id="economicChart"></canvas>
-            </div>
-        </div>
-        
-        <!-- TEKNISKA DIMENSIONEN -->
-        <div class="dimension-card technical" id="dim-technical">
-            <div class="dimension-header">⚙️ Tekniska dimensionen</div>
-            <div class="description-box">
-                <strong>Om tekniska dimensionen:</strong> Handlar om underhållsfrekvens och komplexitet.
-            </div>
-            <div class="instruction">⚖️ Fördela 100 poäng mellan tekniska kriterierna:</div>
-            <div id="technical-sliders"></div>
-            <div class="total-section">
-                <div class="total-display" id="technicalTotal">0</div>
-                <div class="points-remaining" id="technicalRemaining"></div>
-            </div>
-            <div class="chart-container">
-                <canvas id="technicalChart"></canvas>
-            </div>
-        </div>
+       <!-- TEKNISKA DIMENSIONEN -->
+<div class="dimension-card technical" id="dim-technical">
+    <div class="dimension-header">⚙️ Tekniska dimensionen</div>
+    
+    <div class="description-box-teknisk">
+        <strong>Om tekniska dimensionen:</strong> Handlar om underhållsfrekvens och komplexitet.
+    </div>
+    
+    <!-- PRESTANDATABELL FÖR TEKNIK -->
+    <div style="background-color: #f3e8ff; padding: 15px; border-radius: 8px; margin: 15px 0;">
+        <p style="font-weight: bold; margin-bottom: 10px;">📊 Prestanda för alternativen inom tekniska dimensionen (jämfört med referensalternativet Makadamdike):</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <tr style="background-color: #9b59b6; color: white;">
+                <th style="padding: 8px; text-align: left;">Alternativ</th>
+                <th style="padding: 8px; text-align: center;">⚙️ Underhållsfrekvens (-10 till +10)</th>
+                <th style="padding: 8px; text-align: center;">⚙️ Underhållskomplexitet (-10 till +10)</th>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Makadamdike</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold;">0 (referens)</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold;">0 (referens)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Gräsbeklätt makadamdike</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #9b59b6;">-2</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #9b59b6;">-1</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #9b59b6;">-5</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #9b59b6;">-6</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px;">Makadamdike + Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #9b59b6;">-4</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #9b59b6;">-4</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">Gräsbeklätt makadamdike + Regnträdgård</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #9b59b6;">-6</td>
+                <td style="padding: 8px; text-align: center; font-weight: bold; color: #9b59b6;">-7</td>
+            </tr>
+        </table>
+        <p style="font-size: 0.8rem; margin-top: 8px; color: #666;">Negativa poäng = mer frekvent/komplext underhåll än makadamdike, positiva = mindre frekvent/komplext underhåll</p>
+    </div>
+    
+    <div class="instruction">⚖️ Fördela 100 poäng mellan tekniska kriterierna:</div>
+    <div id="technical-sliders"></div>
+    
+    <div class="total-section">
+        <div class="total-display" id="technicalTotal">0</div>
+        <div class="points-remaining" id="technicalRemaining"></div>
+    </div>
+    
+    <div class="chart-container">
+        <canvas id="technicalChart"></canvas>
+    </div>
+</div>
         
         <!-- DIMENSIONSVIKTNING MED KRITERIER UNDER -->
         <div class="dimension-card dimensions-weighting" id="dim-dimensions">
@@ -1214,7 +1274,7 @@ html
             formData.append('dimension_economic', values.dimensions[2]);
             formData.append('dimension_technical', values.dimensions[3]);
             
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbwlTWQSLQDDaXF7vocMKazTcXiY76ibnQ8uvk8eUxOxQjhnJiz2J6_dGwhe1eno2MJl/exec';
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbz8B6ap7luHShh2s1s23v4QV9FbzUg6tjribSSHM04Uxwx9c-zi8lS0qe4j83ECMUmg/exec';
             
             try {
                 await fetch(scriptURL, {
