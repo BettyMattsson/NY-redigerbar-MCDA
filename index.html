@@ -447,9 +447,9 @@
                     <td style="padding: 8px; font-weight: 500;"> Biologisk mångfald</td>
                     <td style="padding: 8px; text-align: center;">0</td>
                     <td style="padding: 8px; text-align: center; color: #27ae60;">0</td>
-                    <td style="padding: 8px; text-align: center; color: #27ae60;">2</td>
-                    <td style="padding: 8px; text-align: center; color: #27ae60;">2</td>
-                    <td style="padding: 8px; text-align: center; color: #27ae60;">3</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+2</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+2</td>
+                    <td style="padding: 8px; text-align: center; color: #27ae60;">+3</td>
                 </tr>
             </tbody>
         </table>
@@ -616,7 +616,7 @@
             <tr>
                 <td style="padding: 8px; font-weight: 500;"> Underhållskomplexitet</td>
                 <td style="padding: 8px; text-align: center;">0</td>
-                <td style="padding: 8px; text-align: center; color: #9b59b6;">1</td>
+                <td style="padding: 8px; text-align: center; color: #9b59b6;">+1</td>
                 <td style="padding: 8px; text-align: center; color: #9b59b6;">-2</td>
                 <td style="padding: 8px; text-align: center; color: #9b59b6;">-3</td>
                 <td style="padding: 8px; text-align: center; color: #9b59b6;">-3</td>
@@ -708,23 +708,23 @@
         // ALLA KRITERIER MED BESKRIVNINGAR
         const criteria = {
             environmental: [
-                { id: "nutrients", name: "Åtgärda närsalter", desc: "Minska utsläpp av kväve och fosfor." },
-                { id: "pahs", name: "Åtgärda PAH:er", desc: "Polycykliska aromatiska kolväten." },
-                { id: "heavymetals", name: "Åtgärda tungmetaller", desc: "Bly, kadmium, kvicksilver." },
-                { id: "particles", name: "Åtgärda suspenderade partiklar", desc: "Grumlighet och sediment." },
-                { id: "biodiversity", name: "Biologisk mångfald", desc: "Variation av växter och djur." }
+                { id: "nutrients", name: "Rening av närsalter", desc: "Rena dagvatten från kväve och fosfor. Kan orsaka övergödning." },
+                { id: "pahs", name: "Rening av PAH:er", desc: "Rena dagvatten från polycykliska aromatiska kolväten. Kan orsaka cancer." },
+                { id: "heavymetals", name: "Rening av tungmetaller", desc: "Rena dagvatten från av tungmetaller." },
+                { id: "particles", name: "Rening av suspenderade partiklar", desc: "Rena dagvatten från olösta partiklar i dagvattnet. Kan orsaka grumlighet och sediment." },
+                { id: "biodiversity", name: "Biologisk mångfald", desc: "Bidrar till variation av växter och djur." }
             ],
             social: [
-                { id: "recreation", name: "Rekreation och attraktivitet", desc: "Friluftsliv och avkoppling." },
+                { id: "recreation", name: "Rekreation och attraktivitet", desc: "Tillgänglighet, vilja att vistas i området och avkoppling." },
                 { id: "education", name: "Utbildning", desc: "Pedagogiska värden." }
             ],
             economic: [
                 { id: "installcost", name: "Anläggningskostnad", desc: "Initial kostnad för åtgärden." },
-                { id: "maintenancecost", name: "Underhållskostnad", desc: "Löpande kostnader." }
+                { id: "maintenancecost", name: "Underhållskostnad", desc: "Löpande kostnader under åtgärdens livscykel." }
             ],
             technical: [
-                { id: "frequency", name: "Underhållsfrekvens", desc: "Hur ofta underhåll behövs." },
-                { id: "complexity", name: "Underhållskomplexitet", desc: "Hur komplicerat underhållet är." }
+                { id: "frequency", name: "Underhållsfrekvens", desc: "Hur ofta underhåll behövs. Inkluderar klippning av gräs, bevattning, mm." },
+                { id: "complexity", name: "Underhållskomplexitet", desc: "Hur komplicerat underhållet är (typ av utrustning och kunskap som krävs)." }
             ]
         };
         
